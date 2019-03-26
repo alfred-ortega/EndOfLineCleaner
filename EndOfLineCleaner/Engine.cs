@@ -12,8 +12,8 @@ namespace EndOfLineCleaner
         bool delBackup = true;
 
         bool showingHelp = false;
-        string[] filesToExclude;
-        bool excludeFilesSet = false;
+        List<string> filesToExclude;
+        bool excludeFilesSet = true;
 
         string[] filesToInclude;
         bool includeFilesSet = false;
@@ -46,8 +46,7 @@ namespace EndOfLineCleaner
                             delBackup = bool.Parse(parameter);
                             break;
                         case "exc":
-                            filesToExclude = setArray(parameter);
-                            excludeFilesSet = true;
+                            filesToExclude = toList(setArray(parameter));
                             break;
                         case "file":
                             filesToInclude = setArray(parameter);
@@ -65,10 +64,7 @@ namespace EndOfLineCleaner
             }//end foreach
             if (dirSet || includeFilesSet)
             {
-                if (excludeFilesSet)
-                {
-                    setExclusionFiles();
-                }
+                setExclusionFiles();
                 cleanFiles();
             }
             else
@@ -90,6 +86,16 @@ namespace EndOfLineCleaner
             else
             {
                 retval = new string[] { fileList };
+            }
+            return retval;
+        }
+
+        private List<string> toList(string[] array)
+        {
+            List<string> retval = new List<string>();
+            foreach (string item in array)
+            {
+                retval.Add(item);
             }
             return retval;
         }
@@ -187,6 +193,7 @@ namespace EndOfLineCleaner
         {
             List<string> temp = new List<string>();
             string fileToTest = string.Empty;
+            //filesToExclude.add();
             foreach (string file in filesToParse)
             {
                 if (!file.Contains("\\"))  //full path provided
@@ -203,8 +210,7 @@ namespace EndOfLineCleaner
                     fileToTest = file;
                 }
 
-                int i = Array.IndexOf(filesToExclude, fileToTest);
-                if (i < 0)
+                if (!filesToExclude.Contains(fileToTest))
                     temp.Add(fileToTest);
             }
             return temp;
@@ -214,7 +220,10 @@ namespace EndOfLineCleaner
         private void setExclusionFiles()
         {
             List<string> temp = new List<string>();
-
+            string currExe = Environment.CurrentDirectory + "\\" + "EndOfLineCleaner.exe";
+            string currConfig = currExe + ".config";
+            filesToExclude.Add(currExe);
+            filesToExclude.Add(currConfig);
             string dirtest = dir;
 
             if (!dirtest.EndsWith("\\"))
@@ -232,7 +241,7 @@ namespace EndOfLineCleaner
                 }
 
             }
-            filesToExclude = temp.ToArray();
+            filesToExclude = temp;
 
 
         }
