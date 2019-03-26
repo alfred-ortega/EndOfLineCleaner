@@ -296,7 +296,7 @@ namespace EndOfLineCleaner
 
         private void showHelp()
         {
-            Console.WriteLine("EndOfLineCleaner 1.0 help");
+            Console.WriteLine("EndOfLineCleaner 0.8 help");
             Console.WriteLine("The following are the acceptable parameters for the program:");
             Console.WriteLine();
 
